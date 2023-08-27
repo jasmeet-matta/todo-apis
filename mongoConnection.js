@@ -1,8 +1,11 @@
+let conn_str = process.env.CONN_STR;
+
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const uri = "mongodb+srv://jasmeetmatta:SKw0OTT8t2c6jlor@cluster0.vfums6e.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${conn_str}@cluster0.vfums6e.mongodb.net/myDb?retryWrites=true&w=majority`;
 const databaseName = "myDb";
 const collectionName = "todo";
 let db;
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
