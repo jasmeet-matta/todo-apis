@@ -15,9 +15,11 @@ const setHeadersAndConnect = async (res) => {
   return await connectDb();
 };
 
+let conn_str = process.env.CONN_STR;
+
 // MongoDB connection
 mongoose.connect(
-  "mongodb+srv://jasmeetmatta:SKw0OTT8t2c6jlor@cluster0.vfums6e.mongodb.net/myDb?retryWrites=true&w=majority",
+  `mongodb+srv://${conn_str}@cluster0.vfums6e.mongodb.net/myDb?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
