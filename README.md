@@ -1,44 +1,62 @@
-# Hello Node!
+# Todo APIs
 
-This project includes a Node.js server script and a web page that connects to it. The front-end page presents a form the visitor can use to submit a color name, sending the submitted value to the back-end API running on the server. The server returns info to the page that allows it to update the display with the chosen color. 🎨
+Welcome to the Todo APIs repository! This project provides a set of APIs built using Node.js for managing tasks and todos.
 
-[Node.js](https://nodejs.org/en/about/) is a popular runtime that lets you run server-side JavaScript. This project uses the [Fastify](https://www.fastify.io/) framework and explores basic templating with [Handlebars](https://handlebarsjs.com/).
+## Table of Contents
 
-_Last updated: 10 July 2023_
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Dependencies](#dependencies)
+- [Database Connection](#database-connection)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Prerequisites
+## Introduction
 
-You'll get best use out of this project if you're familiar with basic JavaScript. If you've written JavaScript for client-side web pages this is a little different because it uses server-side JS, but the syntax is the same!
+This repository contains a collection of APIs designed to facilitate task and todo management. With these APIs, you can create, read, update, and delete tasks.
 
-## What's in this project?
+## Getting Started
 
-← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
+To use the APIs locally, follow these steps:
 
-← `public/style.css`: The styling rules for the pages in your site.
+1. Clone this repository to your local machine.
+2. Install the required dependencies by running `npm install`.
+3. Start the server using `npm start`.
 
-← `server.js`: The **Node.js** server script for your new site. The JavaScript defines the endpoints in the site back-end, one to return the homepage and one to update with the submitted color. Each one sends data to a Handlebars template which builds these parameter values into the web page the visitor sees.
+Now you're ready to interact with the APIs at `http://localhost:3000`.
 
-← `package.json`: The NPM packages for your project's dependencies.
+## Dependencies
 
-← `src/`: This folder holds the site template along with some basic data files.
+The project uses the following dependencies:
 
-← `src/pages/index.hbs`: This is the main page template for your site. The template receives parameters from the server script, which it includes in the page HTML. The page sends the user submitted color value in the body of a request, or as a query parameter to choose a random color.
+- Express.js: A lightweight web application framework.
+- Mongoose: An Object Data Modeling (ODM) library for MongoDB.
+- Body-parser: Middleware for parsing request bodies.
 
-← `src/colors.json`: A collection of CSS color names. We use this in the server script to pick a random color, and to match searches against color names.
+For a full list of dependencies, check the [package.json](./package.json) file.
 
-← `src/seo.json`: When you're ready to share your new site or add a custom domain, change SEO/meta settings in here.
+## Database Connection
 
-## Try this next 🏗️
+The [mongoConnection.js](./mongoConnection.js) file contains the code for establishing a connection to the MongoDB database. Make sure to update the database URL and credentials as needed.
 
-Take a look in `TODO.md` for next steps you can try out in your new site!
+## API Endpoints
 
-___Want a minimal version of this project to build your own Node.js app? Check out [Blank Node](https://glitch.com/edit/#!/remix/glitch-blank-node)!___
+The main API routes and their functionality are detailed in the [api.js](./api.js) file. These endpoints allow you to interact with tasks and todos, including creating, retrieving, updating, and deleting them.
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+Here are some example endpoints:
 
-## You built this with Glitch!
+- GET `/api/tasks`: Retrieve all tasks.
+- POST `/api/tasks`: Create a new task.
+- PUT `/api/tasks/:id`: Update a task by ID.
+- DELETE `/api/tasks/:id`: Delete a task by ID.
 
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
+For more detailed information, refer to the [api.js](./api.js) file.
 
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+## Contributing
+
+Contributions are welcome! If you have ideas for improvements or bug fixes, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
