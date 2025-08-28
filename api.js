@@ -1,10 +1,11 @@
+require('dotenv').config();
 const connectDb = require("./mongoConnection");
 const express = require("express");
 const cors = require("cors");
 const app = express();
 //to create a new object for deleting record using id
 const mongodb = require("mongodb");
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 
 app.use(cors());
@@ -15,11 +16,11 @@ const setHeadersAndConnect = async (res) => {
   return await connectDb();
 };
 
-let conn_str = process.env.CONN_STR;
+const dbPassword = process.env.DB_PASSWORD;
 
 // MongoDB connection
 mongoose.connect(
-  `mongodb+srv://${conn_str}@cluster0.vfums6e.mongodb.net/myDb?retryWrites=true&w=majority`,
+  `mongodb+srv://jasmeetmatta:${dbPassword}@cluster0.vfums6e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

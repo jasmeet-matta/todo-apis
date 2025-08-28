@@ -1,7 +1,10 @@
-let conn_str = process.env.CONN_STR;
+require('dotenv').config();
 
+const dbPassword = process.env.DB_PASSWORD;
+console.log(dbPassword);
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const uri = `mongodb+srv://${conn_str}@cluster0.vfums6e.mongodb.net/myDb?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://jasmeetmatta:${dbPassword}@cluster0.vfums6e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
 const databaseName = "myDb";
 const collectionName = "todo";
 let db;
