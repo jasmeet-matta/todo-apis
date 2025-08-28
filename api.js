@@ -2,127 +2,94 @@ require('dotenv').config();
 const connectDb = require("./mongoConnection");
 const express = require("express");
 const cors = require("cors");
-const app = express();
-//to create a new object for deleting record using id
 const mongodb = require("mongodb");
+
+const app = express();
 const PORT = process.env.PORT || 3000;
-const mongoose = require("mongoose");
 
 app.use(cors());
-//middleware to parse data
 app.use(express.json());
 
-const setHeadersAndConnect = async (res) => {
+const setHeadersAndConnect = async () => {
   return await connectDb();
 };
-
-const dbPassword = process.env.DB_PASSWORD;
-
-// MongoDB connection
-mongoose.connect(
-  `mongodb+srv://jasmeetmatta:${dbPassword}@cluster0.vfums6e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
-
-// Task model
-const Task = mongoose.model(
-  "Task",
-  {
-    task_name: String,
-    isCompleted: Boolean,
-    taskType: Number,
-    taskCreatedDate: String,
-    taskDueDate: String,
-  },
-  "todo"
-);
 
 // Create a new task
 app.post("/addTask", async (req, res) => {
   try {
-    const taskData = req.body;
-    const task = new Task(taskData);
-    await task.save();
-    res.json(task);
-    console.log(task);
+    const collection = await setHeadersAndConnect();
+    const insertResult = await collection.insertOne(req.body);
+    res.status(201).json(insertResult);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error_message: "⚠️ Could not add the task" });
   }
 });
 
-//GET endpoint
+// GET all tasks
 app.get("/getTasks", async (req, res) => {
   try {
-    const data = await setHeadersAndConnect(res);
-    const result = await data.find().toArray();
-    // const deleteWhere = await data.deleteMany({ foodItem: "food" });
-    res.send(result);
-    // console.log(req);
+    const collection = await setHeadersAndConnect();
+    const result = await collection.find().toArray();
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500).send("⚠️ Unable to get tasks");
   }
 });
 
+// UPDATE a task
 app.put("/updateTask/:id", async (req, res) => {
   try {
-    const data = await setHeadersAndConnect(res);
+    const collection = await setHeadersAndConnect();
     const { task_name, ...otherFields } = req.body;
-
-    const result = await data.updateOne(
-      { _id: new mongodb.ObjectId(req.params.id) },
-      { $set: { task_name, ...otherFields } }
+    const result = await collection.updateOne(
+        { _id: new mongodb.ObjectId(req.params.id) },
+        { $set: { task_name, ...otherFields } }
     );
     if (result.acknowledged) {
-      res.send({ success: "Task updated" });
+      res.json({ success: "Task updated" });
     }
-    console.log(result);
   } catch (error) {
-    res.status(500).send({ error_message: "⚠️ Task could not be updated" });
+    res.status(500).json({ error_message: "⚠️ Task could not be updated" });
   }
 });
 
-//DELETE endpoint
+// DELETE a task
 app.delete("/deleteTask/:id", async (req, res) => {
   try {
-    const data = await setHeadersAndConnect(res);
-    const result = await data.deleteOne({
+    const collection = await setHeadersAndConnect();
+    const result = await collection.deleteOne({
       _id: new mongodb.ObjectId(req.params.id),
     });
     if (result.acknowledged) {
-      res.send({ success: "Task deleted" });
+      res.json({ success: "Task deleted" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ error_message: "⚠️ Task could not be deleted" });
+    console.error(error);
+    res.status(500).json({ error_message: "⚠️ Task could not be deleted" });
   }
 });
 
-//CHANGE TASK STATUS endpoint
-app.put("/changeStatus/:id/", async (req, res) => {
+// CHANGE TASK STATUS
+app.put("/changeStatus/:id", async (req, res) => {
   try {
-    const data = await setHeadersAndConnect(res);
-    const { _id, status, ...otherFields } = req.body;
-    let flag = req.body.isCompleted;
+    const collection = await setHeadersAndConnect();
+    const { _id, status, isCompleted, ...otherFields } = req.body;
 
-    // isCompleted = !req.params.status;
-    const result = await data.updateOne(
-      { _id: new mongodb.ObjectId(req.params.id) },
-      { $set: { status, ...otherFields } }
+    const result = await collection.updateOne(
+        { _id: new mongodb.ObjectId(req.params.id) },
+        { $set: { status, isCompleted, ...otherFields } }
     );
-    if (result.acknowledged && flag == false) {
-      res.send({ success: "Task marked incomplete" });
-    } else {
-      res.send({ success: "Task completed successfully!" });
+
+    if (result.acknowledged && isCompleted === false) {
+      return res.json({ success: "Task marked incomplete" });
     }
+    res.json({ success: "Task completed successfully!" });
   } catch (error) {
-    res
-      .status(500)
-      .send({ error_message: "⚠️ Task status could not be updated" });
+    console.error(error);
+    res.status(500).json({ error_message: "⚠️ Task status could not be updated" });
   }
 });
 
-app.listen(PORT, () => console.log(`live on ${PORT}`));
+app.listen(PORT, () => console.log(`Server live on ${PORT}`));
